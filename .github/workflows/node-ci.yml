@@ -1,6 +1,6 @@
 name: Node CI
 
-on: [push]
+on: [pull_request]
 
 jobs:
   Flag-Untested-Code:
@@ -11,7 +11,7 @@ jobs:
       - run: echo "🔎 The name of your branch is ${{ github.ref }} and your repository is ${{ github.repository }}."
       - name: Check out repository code
         uses: actions/checkout@v2
-      - run: echo "GITHUB_BASE_REF = $GITHUB_BASE_REF"
+      - run: echo "GITHUB_BASE_REF = ${GITHUB_BASE_REF}"
       - name: Fetch base ref
         run: |
           # Make sure we also fetch the base ref so that ESLint, Flow, and Jest
