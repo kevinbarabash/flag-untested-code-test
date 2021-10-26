@@ -3,7 +3,7 @@ name: node-ci
 on: push
 
 jobs:
-  flag_untested_code:
+  flag-untested-code:
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
