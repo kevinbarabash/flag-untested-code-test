@@ -37,7 +37,7 @@ jobs:
         if: steps.cache-node-modules.outputs.cache-hit != 'true'
         run: yarn install --frozen-lockfile
       - name: Flag Untested Code
-        uses: kevinbarabash/flag-untested-code-action@main
+        uses: kevinbarabash/flag-untested-code-action
         with:
           jest-bin: ./node_modules/.bin/jest
         env:
