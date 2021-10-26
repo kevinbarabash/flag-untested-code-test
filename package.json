@@ -1,0 +1,14 @@
+{
+  "name": "flag-untested-code-test",
+  "version": "0.0.1",
+  "main": "index.js",
+  "repository": "git@github.com:kevinbarabash/flag-untested-code-test.git",
+  "author": "Kevin Barabash <kevinb@khanacademy.org>",
+  "license": "MIT",
+  "devDependencies": {
+    "jest": "^27.3.1"
+  },
+  "scripts": {
+    "test": "jest"
+  }
+}
