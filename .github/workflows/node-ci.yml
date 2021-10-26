@@ -1,35 +1,17 @@
-name: node-ci
-
+name: GitHub Actions Demo
 on: [push]
-
 jobs:
-  flag-untested-code:
+  Explore-GitHub-Actions:
     runs-on: ubuntu-latest
     steps:
-      - name: Checking out latest commit
+      - run: echo "🎉 The job was automatically triggered by a ${{ github.event_name }} event."
+      - run: echo "🐧 This job is now running on a ${{ runner.os }} server hosted by GitHub!"
+      - run: echo "🔎 The name of your branch is ${{ github.ref }} and your repository is ${{ github.repository }}."
+      - name: Check out repository code
         uses: actions/checkout@v2
-      - name: Checking out base ref
+      - run: echo "💡 The ${{ github.repository }} repository has been cloned to the runner."
+      - run: echo "🖥️ The workflow is now ready to test your code on the runner."
+      - name: List files in the repository
         run: |
-          # Make sure we also fetch the base ref so that ESLint, Flow, and Jest
-          # have a ref to compare against.
-          git fetch --depth 1 origin ${GITHUB_BASE_REF}
-      - name: Use Node.js 12.16.x
-        uses: actions/setup-node@v1
-        with:
-          node-version: 12.16.x
-      - name: Cache node_modules
-        uses: actions/cache@v2
-        id: cache-node-modules
-        with:
-          path: node_modules
-          key: ${{ runner.os }}-12.16.x-node_modules-${{ hashFiles('**/yarn.lock') }}
-          restore-keys: ${{ runner.os }}-12.16.x-node_modules-
-      - name: Install Root Dependencies
-        if: steps.cache-node-modules.outputs.cache-hit != 'true'
-        run: yarn install --frozen-lockfile
-      - name: Flag Untested Code
-        uses: kevinbarabash/flag-untested-code-action
-        with:
-          jest-bin: ./node_modules/.bin/jest
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          ls ${{ github.workspace }}
+      - run: echo "🍏 This job's status is ${{ job.status }}."
