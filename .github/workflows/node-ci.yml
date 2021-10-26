@@ -1,6 +1,6 @@
 name: node-ci
 
-on: pull_request
+on: push
 
 jobs:
   flag_untested_code:
