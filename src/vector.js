@@ -3,6 +3,10 @@ class Vector {
         Object.assign(this, {x, y});
     }
 
+    add(other) {
+        return new Vector(this.x + other.x, this.y + other.y);
+    }
+
     get length() {
         return Math.sqrt(this.x * this.x + this.y * this.y);
     }
