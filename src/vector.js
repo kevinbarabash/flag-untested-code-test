@@ -4,7 +4,9 @@ class Vector {
     }
 
     add(other) {
-        return new Vector(this.x + other.x, this.y + other.y);
+        const x = this.x + other.x;
+        const y = this.y + other.y;
+        return new Vector(x, y);
     }
 
     get length() {
