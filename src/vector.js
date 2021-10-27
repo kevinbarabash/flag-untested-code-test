@@ -11,6 +11,7 @@ class Vector {
         return Math.sqrt(this.x * this.x + this.y * this.y);
     }
 
+    /* istanbul ignore next */
     toString() {
         return `(${this.x},${this.y})`;
     }
