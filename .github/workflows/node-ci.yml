@@ -46,4 +46,24 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Echo outputs.report
         run: echo "${{ steps.flag-untested-code.outputs.report }}"
+      - name: Find existing comment
+        uses: peter-evans/find-comment@915683066818fa7811af74ff4c87a90dbc3fad96
+        id: fc
+        with:
+          issue-number: ${{ github.event.pull_request.number }}
+          comment-author: 'github-actions[bot]'
+          body-includes: '## Coverage deltas'
+      - name: Create comment, if none exists
+        if: steps.fc.outputs.comment-id == ''
+        uses: peter-evans/create-or-update-comment@85a7ce63456c26d56a5ea525941e3d89f9e6e20a
+        with:
+          issue-number: ${{ github.event.pull_request.number }}
+          body: ${{ steps.flag-untested-code.outputs.report }}
+      - name: Update comment, if one already exists
+        if: steps.fc.outputs.comment-id != ''
+        uses: peter-evans/create-or-update-comment@85a7ce63456c26d56a5ea525941e3d89f9e6e20a
+        with:
+          comment-id: ${{ steps.fc.outputs.comment-id }}
+          edit-mode: replace
+          body: ${{ steps.flag-untested-code.outputs.report }}
       - run: echo "🍏 This job's status is ${{ job.status }}."
