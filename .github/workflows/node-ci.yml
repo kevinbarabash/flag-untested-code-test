@@ -37,10 +37,13 @@ jobs:
         if: steps.cache-node-modules.outputs.cache-hit != 'true'
         run: yarn install --frozen-lockfile
       - name: Flag Untested Code
+        id: flag-untested-code
         uses: kevinbarabash/flag-untested-code-action@main
         with:
           jest-bin: ./node_modules/.bin/jest
           annotation-level: failure
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Echo outputs.report
+        run: echo "${{ steps.flag-untested-code.outputs.report }}"
       - run: echo "🍏 This job's status is ${{ job.status }}."
