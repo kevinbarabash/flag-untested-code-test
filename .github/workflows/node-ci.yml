@@ -41,7 +41,6 @@ jobs:
         with:
           jest-bin: ./node_modules/.bin/jest
           annotation-level: failure
-          token: ${{ secrets.GITHUB_TOKEN }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - run: echo "🍏 This job's status is ${{ job.status }}."
