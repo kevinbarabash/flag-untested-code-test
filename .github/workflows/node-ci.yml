@@ -38,7 +38,7 @@ jobs:
         run: yarn install --frozen-lockfile
       - name: Flag Untested Code
         id: flag-untested-code
-        uses: kevinbarabash/flag-untested-code-action@main
+        uses: kevinbarabash/flag-untested-code-action@fixture-tests
         with:
           jest-bin: ./node_modules/.bin/jest
           annotation-level: failure
