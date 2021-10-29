@@ -1,0 +1,69 @@
+name: Node CI
+
+on: [pull_request]
+
+jobs:
+  Flag-Untested-Code:
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "🎉 The job was automatically triggered by a ${{ github.event_name }} event."
+      - run: echo "🐧 This job is now running on a ${{ runner.os }} server hosted by GitHub!"
+      - run: echo "🔎 The name of your branch is ${{ github.ref }} and your repository is ${{ github.repository }}."
+      - name: Check out repository code
+        uses: actions/checkout@v2
+      - run: echo "GITHUB_BASE_REF = ${GITHUB_BASE_REF}"
+      - name: Fetch base ref
+        run: |
+          # Make sure we also fetch the base ref so that ESLint, Flow, and Jest
+          # have a ref to compare against.
+          git fetch --depth 1 origin ${GITHUB_BASE_REF}
+      - run: echo "💡 The ${{ github.repository }} repository has been cloned to the runner."
+      - run: echo "🖥️ The workflow is now ready to test your code on the runner."
+      - name: List files in the repository
+        run: |
+          ls ${{ github.workspace }}
+      - name: Use Node.js 12.16.x
+        uses: actions/setup-node@v1
+        with:
+          node-version: 12.16.x
+      - name: Cache node_modules
+        uses: actions/cache@v2
+        id: cache-node-modules
+        with:
+          path: node_modules
+          key: ${{ runner.os }}-12.16.x-node_modules-${{ hashFiles('**/yarn.lock') }}
+          restore-keys: ${{ runner.os }}-12.16.x-node_modules-
+      - name: Install Dependencies
+        if: steps.cache-node-modules.outputs.cache-hit != 'true'
+        run: yarn install --frozen-lockfile
+      - name: Flag Untested Code
+        id: flag-untested-code
+        uses: kevinbarabash/flag-untested-code-action@fixture-tests
+        with:
+          jest-bin: ./node_modules/.bin/jest
+          annotation-level: failure
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Echo outputs.report
+        run: echo "${{ steps.flag-untested-code.outputs.report }}"
+      - name: Find existing comment
+        uses: peter-evans/find-comment@915683066818fa7811af74ff4c87a90dbc3fad96
+        id: fc
+        with:
+          issue-number: ${{ github.event.pull_request.number }}
+          comment-author: 'github-actions[bot]'
+          body-includes: '## Coverage deltas'
+      - name: Create comment, if none exists
+        if: steps.fc.outputs.comment-id == ''
+        uses: peter-evans/create-or-update-comment@85a7ce63456c26d56a5ea525941e3d89f9e6e20a
+        with:
+          issue-number: ${{ github.event.pull_request.number }}
+          body: ${{ steps.flag-untested-code.outputs.report }}
+      - name: Update comment, if one already exists
+        if: steps.fc.outputs.comment-id != ''
+        uses: peter-evans/create-or-update-comment@85a7ce63456c26d56a5ea525941e3d89f9e6e20a
+        with:
+          comment-id: ${{ steps.fc.outputs.comment-id }}
+          edit-mode: replace
+          body: ${{ steps.flag-untested-code.outputs.report }}
+      - run: echo "🍏 This job's status is ${{ job.status }}."
